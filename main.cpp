@@ -11,6 +11,7 @@ class Task {
         string name;
         int points;
         int comparisons;  //ska vara compared.size -1
+        //en kommentar
         
         vector<string> compared;
 
