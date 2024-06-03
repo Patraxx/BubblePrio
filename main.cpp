@@ -12,7 +12,7 @@ class Task {
         int points;
         int comparisons;  //ska vara compared.size -1
         //en kommentar
-        
+        //en till kommentar
         vector<string> compared;
 
     Task(string name) {
