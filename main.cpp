@@ -1,8 +1,9 @@
-#include <iostream>
+#include <iostream>   //Vad faen är knas här. 
 #include <vector>
 #include <algorithm>
 #include <string>
 #include <random>
+#include <chrono>
 
 using namespace std;
 
@@ -117,10 +118,19 @@ void printTasks(const vector<Task*>& tasks) {
     }
 }
 
+void printMatches(const vector<Task*>& tasks) {
+    for (const auto& task : tasks) {
+        cout << task->name << ": " <<endl;
+        for (auto c: task->compared){
+            cout << c << endl;
+        }
+    }
+}
+
 Task* returnTask(vector<Task*> taskList, Task* firstTask){
     
     for(auto &t : taskList){
-    
+              //om task är full, kolla nästa task.
         if (t->name != firstTask->name &&
                     find(firstTask->compared.begin(), firstTask->compared.end(), t->name) == firstTask->compared.end()) {
                     return t;
@@ -167,8 +177,9 @@ int main() {
        // shuffle(tasks.begin(), tasks.end(), mt19937(seed));   //Lista av tasks shufflas
         
         
-        for (int i = 0; i < taskNumber; i++) {   //Gå igenom listan i ny ordning
+        for (int i = 0; i < taskNumber; i++) {  
             
+            //om det är så att ett objekt redan har matchats med alla så måste vi köra en continue
             shuffle(comparisons.begin(), comparisons.end(), mt19937(seed));
             
             Task* comparedTask = returnTask(tasks, tasks[i]);
@@ -192,6 +203,8 @@ int main() {
         });
     
     printTasks(tasks);
+
+    printMatches(tasks);
     
     
     
