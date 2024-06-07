@@ -96,9 +96,12 @@ void printMatches(const vector<Task*>& tasks) {
     }
 }
 
-Task* returnTask(vector<Task*> taskList, Task* firstTask){
+Task* returnTask(vector<Task*> taskList, Task* firstTask, string lastTask, string lastCompared){
     
     for(auto &t : taskList){
+        if(lastTask == t->name || lastCompared == t->name || t->comparisons == taskList.size()-1){
+            continue;
+        }
              
         if (t->name != firstTask->name &&
                     find(firstTask->compared.begin(), firstTask->compared.end(), t->name) == firstTask->compared.end()) {
@@ -107,6 +110,12 @@ Task* returnTask(vector<Task*> taskList, Task* firstTask){
     }
     return nullptr;
 }
+
+
+ 
+
+ 
+
 
 bool allCompared(vector<Task*> tasks){
     
@@ -117,6 +126,15 @@ bool allCompared(vector<Task*> tasks){
     return true;
 }
 
+void nullDebug(Task* task, Task* compreTask){
+    
+    if(task == nullptr)
+        cout << "task is NULL";
+    
+    if(compreTask == nullptr)
+        cout << "compareTask is NULL";
+    
+}
 
 
 
@@ -145,6 +163,10 @@ int main() {
 
     cout << "Vilka av dessa två aktiviteter är viktigast?" <<endl <<endl;
     
+    
+    string lastTask;
+    string lastCompare;
+    
    
     
     bool done = false;
@@ -152,30 +174,36 @@ int main() {
     
     while(!done){
         
-       // shuffle(tasks.begin(), tasks.end(), mt19937(seed));   //Lista av tasks shufflas
-        
-        
-        for (int i = 0; i < taskNumber; i++) {  
 
+        for (int i = 0; i < taskNumber; i++) {  
+            
+            if(lastCompare == tasks[i]->name){
+                continue;
+            }
+           
             if(tasks[i]->comparisons == taskNumber - 1){
                 continue;
             }
-            shuffle(comparisons.begin(), comparisons.end(), mt19937(seed));
             
-            Task* comparedTask = returnTask(tasks, tasks[i]);
-            if(comparedTask == NULL){
-                done = true;
-                break;
-            }
-                
             
+           // shuffle(comparisons.begin(), comparisons.end(), mt19937(seed));
+            
+            Task* comparedTask = returnTask(tasks, tasks[i], lastTask, lastCompare);
+          
             displayChoice(*tasks[i], *comparedTask);
             
             selection(*tasks[i], *comparedTask);
             
+            lastTask = tasks[i]->name;
+            lastCompare = comparedTask->name;
+            
         
         }
-        done = allCompared(tasks);      
+        for(auto & t: tasks){
+            cout << t->comparisons << endl;
+        }
+        
+        done = allCompared(tasks);
     }
     
     sort(tasks.begin(), tasks.end(), [](Task* a, Task* b) {
