@@ -54,6 +54,7 @@ void choiceHandling(Task &currentTask, Task &compareTask, int choice) {
 
 
 void selection(Task &currentTask, Task &compareTask){
+    int crash = 0;
     
     int selection;
     
@@ -62,6 +63,10 @@ void selection(Task &currentTask, Task &compareTask){
         
         if (selection != 1 && selection != 2){
             cout <<"Fel val"<< endl;
+            crash++;
+        }
+        if(crash > 5){
+            break;
         }
         
     }while (selection != 1 && selection != 2);
@@ -78,6 +83,53 @@ bool doneComparisons(Task* task){
     return true;
     else
         return false;
+    
+}
+
+vector<Task*> listChoice(int selector){
+    
+    vector<Task*> tasks;
+    
+    switch(selector){
+            
+        case 1:  //cleaning
+            tasks.push_back(new Task("Städa köket"));
+            tasks.push_back(new Task("Fixa Toaletten"));
+            tasks.push_back(new Task("Reda upp sovrummet"));
+            return tasks;
+    
+        case 2:
+    
+            tasks.push_back(new Task("Göra misselistor"));
+            tasks.push_back(new Task("Köpa mutor"));
+            tasks.push_back(new Task("Inköpslistor till Ica"));
+            tasks.push_back(new Task("Inköpslistor till snabbgross"));
+            tasks.push_back(new Task("Sy färdigt klänning"));
+            tasks.push_back(new Task("Packa"));
+            tasks.push_back(new Task("Städa bilen"));
+            tasks.push_back(new Task("Kolla upp sociala medier"));
+                return tasks;
+            
+        default : return tasks;
+    }
+                                      /*
+                                       misselistor
+                                       köpa mutor
+                                       göra inköpslistor till ica
+                                       inköpslista till snabbgross
+                                       köpa brosch
+                                       sy färdigt klänning
+                                       packa
+                                       köpa smink
+                                       städa bilen
+                                       kolla upp sociala medier
+                                       
+                                       
+                                       */
+                                      
+            
+    
+    
     
 }
 
@@ -99,9 +151,9 @@ void printMatches(const vector<Task*>& tasks) {
 Task* returnTask(vector<Task*> taskList, Task* firstTask, string lastTask, string lastCompared){
     
     for(auto &t : taskList){
-        if(lastTask == t->name || lastCompared == t->name || t->comparisons == taskList.size()-1){
+      /*  if(t->comparisons == taskList.size()-1){
             continue;
-        }
+        }*/
              
         if (t->name != firstTask->name &&
                     find(firstTask->compared.begin(), firstTask->compared.end(), t->name) == firstTask->compared.end()) {
@@ -110,12 +162,6 @@ Task* returnTask(vector<Task*> taskList, Task* firstTask, string lastTask, strin
     }
     return nullptr;
 }
-
-
- 
-
- 
-
 
 bool allCompared(vector<Task*> tasks){
     
@@ -143,15 +189,19 @@ int main() {
     random_device rd;
     
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    vector<Task*> tasks;
+    vector<Task*> tasks = listChoice(2);
+    /*
     tasks.push_back(new Task("Söka praktikplats"));
     tasks.push_back(new Task("Städa skrivbordet"));
     tasks.push_back(new Task("Spela in ett riff"));
     tasks.push_back(new Task("Jobba med Ipad appen"));
     tasks.push_back(new Task("Jobba med den här logiken"));
     tasks.push_back(new Task("Fortsätt på synthwavelåten"));
+     */
     
     vector<Task*> comparisons = tasks;
+    
+    shuffle(comparisons.begin(), comparisons.end(), mt19937(seed));
        
     
     int taskNumber = tasks.size();
@@ -176,19 +226,20 @@ int main() {
         
 
         for (int i = 0; i < taskNumber; i++) {  
+             shuffle(comparisons.begin(), comparisons.end(), mt19937(seed));
             
-            if(lastCompare == tasks[i]->name){
+            /*if(lastCompare == tasks[i]->name){
                 continue;
-            }
-           
+            }*/
+        //    shuffle(comparisons.begin(), comparisons.end(), mt19937(seed));
             if(tasks[i]->comparisons == taskNumber - 1){
                 continue;
             }
             
             
-           // shuffle(comparisons.begin(), comparisons.end(), mt19937(seed));
+            //shuffle(comparisons.begin(), comparisons.end(), mt19937(seed));
             
-            Task* comparedTask = returnTask(tasks, tasks[i], lastTask, lastCompare);
+            Task* comparedTask = returnTask(comparisons, tasks[i], lastTask, lastCompare);
           
             displayChoice(*tasks[i], *comparedTask);
             
@@ -200,7 +251,7 @@ int main() {
         
         }
         for(auto & t: tasks){
-            cout << t->comparisons << endl;
+           cout << t->name << ": "<< t->comparisons << endl;
         }
         
         done = allCompared(tasks);
@@ -212,7 +263,7 @@ int main() {
     
     printTasks(tasks);
 
-    printMatches(tasks);
+    //printMatches(tasks);
     
     
     
